@@ -1,15 +1,16 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { IconMenu2, IconX } from "@tabler/icons-react";
+import Image from "next/image";
 import {
   motion,
   AnimatePresence,
   useScroll,
   useMotionValueEvent,
-} from "motion/react";
-import Link from "next/link";
+} from "framer-motion";
 
 import React, { useRef, useState } from "react";
+
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -51,7 +52,10 @@ interface MobileNavMenuProps {
 
 export const Navbar = ({ children, className }: NavbarProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
+  const { scrollY } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
   const [visible, setVisible] = useState<boolean>(false);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -65,7 +69,9 @@ export const Navbar = ({ children, className }: NavbarProps) => {
   return (
     <motion.div
       ref={ref}
-      className={cn("fixed inset-x-0 top-0 z-40 w-full", className)}
+      // IMPORTANT: Change this to class of `fixed` if you want the navbar to be fixed
+      className={cn("sticky inset-x-0 top-0 z-40 w-full", className)}
+      suppressHydrationWarning
     >
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
@@ -225,14 +231,40 @@ export const MobileNavToggle = ({
   );
 };
 
-export const NavbarLogo = () => {
+interface NavbarLogoProps {
+  logo?: {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+    href: string;
+  };
+  brandName?: string;
+}
+
+export const NavbarLogo = ({ 
+  logo = {
+    src: "https://assets.aceternity.com/logo-dark.png",
+    alt: "logo",
+    width: 30,
+    height: 30,
+    href: "",
+  },
+  brandName = "Startup"
+}: NavbarLogoProps) => {
   return (
-    <Link
-      href="/"
+    <a
+      href={logo.href}
       className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
     >
-      <span className="font-medium text-black dark:text-white">Next.js</span>
-    </Link>
+      <Image
+        src={logo.src}
+        alt={logo.alt}
+        width={logo.width}
+        height={logo.height}
+      />
+      <span className="font-medium text-black dark:text-white">{brandName}</span>
+    </a>
   );
 };
 

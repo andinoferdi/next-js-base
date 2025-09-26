@@ -2,7 +2,7 @@ import { type HomePageData } from "@/types/home";
 
 export const getHomePageData = (): HomePageData => {
   return {
-    title: "Home",
+    title: "Home - Next.js App",
     description: "This is a Next.js project",
     logoConfig: {
       src: "/next.svg",

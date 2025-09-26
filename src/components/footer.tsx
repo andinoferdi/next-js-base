@@ -1,46 +1,49 @@
 "use client";
+
+import { getFooterConfig } from "@/stores/footer-menu";
 import {
-  Footer,
+  Footer as ResizableFooter,
   FooterBody,
-  FooterBrand,
-  FooterLinks,
+  FooterSection,
+  FooterLogo,
   FooterSocial,
-  FooterBottom,
   FooterCopyright,
 } from "@/components/ui/resizable-footer";
-import { getFooterConfig } from "@/stores/footer-menu";
 
-export default function FooterDemo() {
+export const DemoFooter = () => {
   const footerConfig = getFooterConfig();
+  const { sections, socialLinks, logo, brandName, copyright } = footerConfig;
 
   return (
-    <Footer>
+    <ResizableFooter>
       <FooterBody>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          <FooterBrand
-            companyName={footerConfig.brand.companyName}
-            description={footerConfig.brand.description}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+          <div className="lg:col-span-1 space-y-4">
+            <FooterLogo logo={logo} brandName={brandName} />
+            <p className="text-sm text-muted-foreground max-w-xs">
+              Building the future of web development with modern tools and best practices.
+            </p>
+            <FooterSocial socialLinks={socialLinks} />
+          </div>
           
-          <FooterLinks
-            title="Quick Links"
-            items={footerConfig.quickLinks}
-          />
-          
-          <FooterLinks
-            title="Support"
-            items={footerConfig.supportLinks}
-          />
-          
-          <FooterSocial
-            items={footerConfig.socialLinks}
-          />
+          {sections.map((section, index) => (
+            <FooterSection
+              key={index}
+              title={section.title}
+              links={section.links}
+            />
+          ))}
+        </div>
+        
+        <div className="mt-8 pt-8 border-t border-border">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <FooterCopyright copyright={copyright} />
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <span>Made with ❤️ using Next.js</span>
+            </div>
+          </div>
         </div>
       </FooterBody>
-      
-      <FooterBottom>
-        <FooterCopyright text={footerConfig.copyright} />
-      </FooterBottom>
-    </Footer>
+    </ResizableFooter>
   );
-}
+};

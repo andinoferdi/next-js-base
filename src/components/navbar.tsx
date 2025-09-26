@@ -1,77 +1,69 @@
 "use client";
+
+import { useState } from "react";
+import { getNavbarConfig } from "@/stores/navbar-menu";
 import {
   Navbar,
   NavBody,
   NavItems,
   MobileNav,
+  MobileNavHeader,
+  MobileNavMenu,
+  MobileNavToggle,
   NavbarLogo,
   NavbarButton,
-  MobileNavHeader,
-  MobileNavToggle,
-  MobileNavMenu,
 } from "@/components/ui/resizable-navbar";
-import { useState } from "react";
-import { getMenuItems } from "@/stores/navbar-menu";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
-export default function NavbarDemo() {
-  const navItems = getMenuItems();
+export const DemoNavbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const navbarConfig = getNavbarConfig();
+  const { mainItems: menuItems, logo, ctaButton } = navbarConfig;
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const handleItemClick = () => {
+    setIsOpen(false);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
-    <div className="relative w-full">
-      <Navbar>
-        <NavBody>
-          <NavbarLogo />
-          <NavItems items={navItems} />
-          <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary">Login</NavbarButton>
-            <NavbarButton variant="primary">Book a call</NavbarButton>
+    <Navbar>
+      <NavBody>
+        <NavbarLogo logo={logo} />
+        <NavItems items={menuItems} onItemClick={handleItemClick} />
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <NavbarButton variant={ctaButton.variant} href={ctaButton.href}>
+            {ctaButton.text}
+          </NavbarButton>
+        </div>
+      </NavBody>
+      <MobileNav>
+        <MobileNavHeader>
+          <NavbarLogo logo={logo} />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <MobileNavToggle isOpen={isOpen} onClick={toggleMobileMenu} />
           </div>
-        </NavBody>
-
-        <MobileNav>
-          <MobileNavHeader>
-            <NavbarLogo />
-            <MobileNavToggle
-              isOpen={isMobileMenuOpen}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            />
-          </MobileNavHeader>
-
-          <MobileNavMenu
-            isOpen={isMobileMenuOpen}
-            onClose={() => setIsMobileMenuOpen(false)}
-          >
-            {navItems.map((item, idx) => (
-              <a
-                key={`mobile-link-${idx}`}
-                href={item.link}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="relative text-neutral-600 dark:text-neutral-300"
-              >
-                <span className="block">{item.name}</span>
-              </a>
-            ))}
-            <div className="flex w-full flex-col gap-4">
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full"
-              >
-                Login
-              </NavbarButton>
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full"
-              >
-                Book a call
-              </NavbarButton>
-            </div>
-          </MobileNavMenu>
-        </MobileNav>
-      </Navbar>
-    </div>
+        </MobileNavHeader>
+        <MobileNavMenu isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          {menuItems.map((item, index) => (
+            <a
+              key={index}
+              href={item.link}
+              className="text-neutral-600 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-100 transition-colors"
+              onClick={handleItemClick}
+            >
+              {item.name}
+            </a>
+          ))}
+          <NavbarButton variant={ctaButton.variant} href={ctaButton.href} className="mt-4">
+            {ctaButton.text}
+          </NavbarButton>
+        </MobileNavMenu>
+      </MobileNav>
+    </Navbar>
   );
-}
+};

@@ -1,19 +1,19 @@
 "use client";
 
+import { useTitle } from "@/components/providers/title-provider";
 import { useEffect } from "react";
-
-import { useTitleContext } from "./providers/title-provider";
 
 interface PageTitleProps {
   title: string;
+  children?: React.ReactNode;
 }
 
-export const PageTitle = ({ title }: PageTitleProps) => {
-  const { setTitle } = useTitleContext();
+export const PageTitle = ({ title, children }: PageTitleProps) => {
+  const { setTitle } = useTitle();
 
   useEffect(() => {
     setTitle(title);
   }, [title, setTitle]);
 
-  return null;
+  return children ? <>{children}</> : null;
 };

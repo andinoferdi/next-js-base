@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  type ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 interface TitleContextType {
   title: string;
@@ -15,29 +9,35 @@ interface TitleContextType {
 
 const TitleContext = createContext<TitleContextType | undefined>(undefined);
 
-export const useTitleContext = () => {
-  const context = useContext(TitleContext);
-  if (context === undefined) {
-    throw new Error("useTitleContext must be used within a TitleProvider");
-  }
-  return context;
-};
-
 interface TitleProviderProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export const TitleProvider = ({ children }: TitleProviderProps) => {
-  const [title, setTitle] = useState("Home");
-  const APP_NAME = "Next.js";
+  const [title, setTitle] = useState<string>("");
 
   useEffect(() => {
-    document.title = `${title} - ${APP_NAME}`;
+    document.title = title;
   }, [title]);
 
+  const value = {
+    title,
+    setTitle,
+  };
+
   return (
-    <TitleContext.Provider value={{ title, setTitle }}>
+    <TitleContext.Provider value={value}>
       {children}
     </TitleContext.Provider>
   );
+};
+
+export const useTitle = () => {
+  const context = useContext(TitleContext);
+  
+  if (context === undefined) {
+    throw new Error("useTitle must be used within a TitleProvider");
+  }
+  
+  return context;
 };

@@ -1,50 +1,71 @@
 "use client";
 
-import { type ButtonHTMLAttributes, forwardRef } from "react";
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
-  isLoading?: boolean;
-}
-
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className = "", variant = "primary", size = "md", isLoading = false, children, disabled, ...props }, ref) => {
-    const baseClasses = "inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 rounded-full border border-solid";
-    
-    const variantClasses = {
-      primary: "bg-foreground text-background border-transparent hover:bg-[#383838] dark:hover:bg-[#ccc]",
-      secondary: "bg-secondary-100 text-secondary-900 border-transparent hover:bg-secondary-200 dark:bg-secondary-800 dark:text-secondary-100 dark:hover:bg-secondary-700",
-      outline: "border-black/[.08] dark:border-white/[.145] hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent",
-      ghost: "border-transparent hover:bg-black/[.05] dark:hover:bg-white/[.06]"
-    };
-    
-    const sizeClasses = {
-      sm: "h-8 px-3 text-sm",
-      md: "h-10 px-4 text-sm",
-      lg: "h-12 px-5 text-base"
-    };
-    
-    const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
-
-    return (
-      <button
-        ref={ref}
-        className={classes}
-        disabled={disabled || isLoading}
-        {...props}
-      >
-        {isLoading ? (
-          <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent" />
-        ) : (
-          children
-        )}
-      </button>
-    );
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default:
+          "bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc] border border-solid border-transparent",
+        secondary:
+          "bg-transparent text-foreground border border-solid border-black/[.08] dark:border-white/[.145] hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
+        responsive: "h-10 sm:h-12 px-4 sm:px-5",
+      },
+      width: {
+        default: "w-auto",
+        full: "w-full",
+        responsive: "w-full sm:w-auto md:w-[158px]",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+      width: "default",
+    },
   }
 );
 
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+  icon?: React.ReactNode;
+  iconPosition?: "left" | "right";
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, width, asChild = false, icon, iconPosition = "left", children, ...props }, ref) => {
+    const Comp = asChild ? "span" : "button";
+    
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, width, className }))}
+        ref={ref}
+        {...props}
+      >
+        {icon && iconPosition === "left" && icon}
+        {children}
+        {icon && iconPosition === "right" && icon}
+      </Comp>
+    );
+  }
+);
 Button.displayName = "Button";
 
-export { Button };
-export type { ButtonProps };
+export { Button, buttonVariants };

@@ -1,92 +1,82 @@
-export interface MenuItem {
+export interface FooterLink {
   name: string;
-  link: string;
+  href: string;
   icon?: string;
-  children?: MenuItem[];
 }
 
-export interface SocialLink {
-  name: string;
-  link: string;
-  icon: string;
+export interface FooterSection {
+  title: string;
+  links: FooterLink[];
 }
 
 export interface FooterConfig {
-  brand: {
-    logo?: string;
-    companyName: string;
-    description: string;
+  sections: FooterSection[];
+  socialLinks: FooterLink[];
+  logo: {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+    href: string;
   };
-  quickLinks: MenuItem[];
-  supportLinks: MenuItem[];
-  socialLinks: SocialLink[];
+  brandName: string;
   copyright: string;
 }
 
 export const defaultFooterConfig: FooterConfig = {
-  brand: {
-    companyName: "Next.js",
-    description: "Building the future with innovative solutions and cutting-edge technology.",
-  },
-  quickLinks: [
+  sections: [
     {
-      name: "About Us",
-      link: "/about",
+      title: "Product",
+      links: [
+        { name: "Features", href: "/features" },
+        { name: "Pricing", href: "/pricing" },
+        { name: "Documentation", href: "/docs" },
+        { name: "API", href: "/api" },
+      ],
     },
     {
-      name: "Services",
-      link: "/services",
+      title: "Company",
+      links: [
+        { name: "About", href: "/about" },
+        { name: "Blog", href: "/blog" },
+        { name: "Careers", href: "/careers" },
+        { name: "Contact", href: "/contact" },
+      ],
     },
     {
-      name: "Portfolio",
-      link: "/portfolio",
+      title: "Support",
+      links: [
+        { name: "Help Center", href: "/help" },
+        { name: "Community", href: "/community" },
+        { name: "Status", href: "/status" },
+        { name: "Security", href: "/security" },
+      ],
     },
     {
-      name: "Blog",
-      link: "/blog",
-    },
-  ],
-  supportLinks: [
-    {
-      name: "Help Center",
-      link: "/help",
-    },
-    {
-      name: "Contact Support",
-      link: "/contact",
-    },
-    {
-      name: "Documentation",
-      link: "https://nextjs.org/docs",
-    },
-    {
-      name: "API Reference",
-      link: "https://nextjs.org/docs/api-reference",
+      title: "Legal",
+      links: [
+        { name: "Privacy", href: "/privacy" },
+        { name: "Terms", href: "/terms" },
+        { name: "Cookies", href: "/cookies" },
+        { name: "Licenses", href: "/licenses" },
+      ],
     },
   ],
   socialLinks: [
-    {
-      name: "GitHub",
-      link: "https://github.com/vercel/next.js",
-      icon: "github",
-    },
-    {
-      name: "Twitter",
-      link: "https://twitter.com/nextjs",
-      icon: "twitter",
-    },
-    {
-      name: "LinkedIn",
-      link: "https://linkedin.com/company/vercel",
-      icon: "linkedin",
-    },
-    {
-      name: "Email",
-      link: "mailto:contact@nextjs.org",
-      icon: "email",
-    },
+    { name: "Twitter", href: "https://twitter.com", icon: "twitter" },
+    { name: "GitHub", href: "https://github.com", icon: "github" },
+    { name: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
+    { name: "Discord", href: "https://discord.com", icon: "discord" },
   ],
-  copyright: "© 2024 Next.js. All rights reserved.",
+  logo: {
+    src: "https://assets.aceternity.com/logo-dark.png",
+    alt: "logo",
+    width: 30,
+    height: 30,
+    href: "/",
+  },
+  brandName: "Startup",
+  copyright: "© 2024 Startup. All rights reserved.",
 };
 
 export const getFooterConfig = (): FooterConfig => {
